@@ -1,9 +1,43 @@
 package com.insigma.http;
 
-import com.insigma.common.util.ClientInfoUtil;
-import com.insigma.dto.Device;
-import com.insigma.shiro.realm.SUserUtil;
-import org.apache.http.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.AuthSchemes;
@@ -12,6 +46,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -42,21 +77,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.lang.reflect.Field;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Map.Entry;
+import com.insigma.common.util.ClientInfoUtil;
+import com.insigma.dto.Device;
+import com.insigma.shiro.realm.SUserUtil;
 
 /**
  * Http辅助工具类</br>
@@ -202,6 +225,103 @@ public class HttpHelper {
             }
         }
     }
+    
+
+    /**
+     * 执行delete 请求
+     *
+     * @param url    远程URL地址
+     * @param appkey 授权key
+     * @return HttpResult
+     * @throws IOException
+     */
+    public static HttpResult executeDelete(String url, String appkey) throws IOException {
+        CloseableHttpClient httpClient = createHttpClient(DEFAULT_SOCKET_TIMEOUT);
+        return executeDelete(httpClient, url, appkey, null, null, DEFAULT_CHARSET, true);
+    }
+    
+    /**
+     * 执行Http delete 请求
+     *
+     * @param httpClient      HttpClient客户端实例，传入null会自动创建一个
+     * @param url             请求的远程地址
+     * @param appkey          授权key
+     * @param referer         referer信息，可传null
+     * @param cookie          cookies信息，可传null
+     * @param charset         请求编码，默认UTF8
+     * @param closeHttpClient 执行请求结束后是否关闭HttpClient客户端实例
+     * @return HttpResult
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static HttpResult executeDelete(CloseableHttpClient httpClient, String url, String appkey, String referer, String cookie, String charset, boolean closeHttpClient) throws IOException {
+        CloseableHttpResponse httpResponse = null;
+        try {
+            charset = getCharset(charset);
+            httpResponse = executeDeleteResponse(httpClient, url, appkey, referer, cookie);
+            //Http请求状态码
+            Integer statusCode = httpResponse.getStatusLine().getStatusCode();
+            String content = getResult(httpResponse, charset);
+            return new HttpResult(statusCode, content);
+        } finally {
+            if (httpResponse != null) {
+                try {
+                    httpResponse.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (closeHttpClient && httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    /**
+     * @param httpClient httpclient对象
+     * @param url        执行GET的URL地址
+     * @param appkey     授权key
+     * @param referer    referer地址
+     * @param cookie     cookie信息
+     * @return CloseableHttpResponse
+     * @throws IOException
+     */
+    public static CloseableHttpResponse executeDeleteResponse(CloseableHttpClient httpClient, String url, String appkey, String referer, String cookie) throws IOException {
+        if (httpClient == null) {
+            httpClient = createHttpClient();
+        }
+        logger.info("delete请求url:" + url);
+        HttpDelete httpdelete = new HttpDelete(url);  
+        if (appkey != null && !"".equals(appkey)) {
+        	httpdelete.setHeader("appkey", appkey);
+        }
+        if (SUserUtil.getCurrentUser() != null) {
+        	httpdelete.setHeader("Authorization", "bearer " + SUserUtil.getCurrentUser().getToken());
+        }
+        if (cookie != null && !"".equals(cookie)) {
+        	httpdelete.setHeader("Cookie", cookie);
+        }
+        if (referer != null && !"".equals(referer)) {
+        	httpdelete.setHeader("referer", referer);
+        }
+
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            //获取操作系统、浏览器、ip地址
+            Device device = ClientInfoUtil.getDevice(request);
+            httpdelete.setHeader("ip", device.getEec119());
+            httpdelete.setHeader("osName", device.getEec117());
+            httpdelete.setHeader("browserName", device.getEec118());
+        } catch (Exception e) {
+        }
+
+        return httpClient.execute(httpdelete);
+    }
+
 
     /**
      * @param httpClient httpclient对象
@@ -428,6 +548,8 @@ public class HttpHelper {
         }
         if (SUserUtil.getCurrentUser() != null) {
             post.setHeader("Authorization", "bearer " + SUserUtil.getCurrentUser().getToken());
+        }else{
+        	System.out.println("token为空");
         }
         if (cookie != null && !"".equals(cookie)) {
             post.setHeader("Cookie", cookie);
@@ -489,6 +611,22 @@ public class HttpHelper {
     public static HttpResult executeUploadFile(String remoteFileUrl, String appkey, File localFile, String file_name, String file_bus_type, String file_bus_id, String userid, String desc) throws IOException {
         return executeUploadFile(remoteFileUrl, appkey, localFile, file_name, file_bus_type, file_bus_id, userid, DEFAULT_CHARSET, true, desc);
     }
+    
+    /**
+     * 执行excel文件上传 
+     * @param remoteFileUrl
+     * @param appkey
+     * @param localFile
+     * @param excel_batch_excel_type
+     * @param mincolumns
+     * @return
+     * @throws IOException
+     */
+    public static HttpResult executeUploadExcelFile(String remoteFileUrl, String appkey, File localFile, String excel_batch_excel_type, String mincolumns) throws IOException {
+        return executeUploadExcelFile(remoteFileUrl, appkey, localFile, excel_batch_excel_type, mincolumns,DEFAULT_CHARSET, true);
+    }
+    
+    
 
     /**
      * 执行文件上传
@@ -642,6 +780,78 @@ public class HttpHelper {
         }
     }
 
+    
+    /**
+     * 执行文件上传
+     *
+     * @param url
+     * @param appkey
+     * @param localFile
+     * @param file_name
+     * @param file_bus_type
+     * @param file_bus_id
+     * @param userid
+     * @param charset         请求编码，默认UTF-8
+     * @param closeHttpClient 执行请求结束后是否关闭HttpClient客户端实例
+     * @return
+     * @throws IOException
+     */
+    public static HttpResult executeUploadExcelFile(String url, String appkey, File localFile, String excel_batch_excel_type, String mincolumns, String charset, boolean closeHttpClient) throws IOException {
+        CloseableHttpResponse httpResponse = null;
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = createHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+            //header
+            httpPost.setHeader("appkey", appkey);
+            try {
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                //获取操作系统、浏览器、ip地址
+                Device device = ClientInfoUtil.getDevice(request);
+                httpPost.setHeader("ip", device.getEec119());
+                httpPost.setHeader("osName", device.getEec117());
+                httpPost.setHeader("browserName", device.getEec118());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            if (SUserUtil.getCurrentUser() != null) {
+                httpPost.setHeader("Authorization", "bearer " + SUserUtil.getCurrentUser().getToken());
+            }
+            // 把文件转换成流对象FileBody
+            FileBody fileBody = new FileBody(localFile);
+            //form参数
+            StringBody excel_batch_excel_type_body = new StringBody(URLEncoder.encode(excel_batch_excel_type, "UTF-8"), ContentType.APPLICATION_FORM_URLENCODED);
+            StringBody mincolumns_body = new StringBody(mincolumns, ContentType.APPLICATION_FORM_URLENCODED);
+            // 以浏览器兼容模式运行，防止文件名乱码。
+            HttpEntity reqEntity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                    .addPart("uploadFile", fileBody)
+                    .addPart("excel_batch_excel_type", excel_batch_excel_type_body)
+                    .addPart("mincolumns", mincolumns_body)
+                    .setCharset(CharsetUtils.get("UTF-8")).build();
+            httpPost.setEntity(reqEntity);
+            httpResponse = httpClient.execute(httpPost);
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
+            String content = getResult(httpResponse, charset);
+            return new HttpResult(statusCode, content);
+        } finally {
+            if (httpResponse != null) {
+                try {
+                    httpResponse.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (closeHttpClient && httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     /**
      * 执行文件上传(以二进制流方式)
      *

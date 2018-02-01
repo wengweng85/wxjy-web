@@ -37,10 +37,10 @@ public class WebSessionInterceptor extends HandlerInterceptorAdapter {
     	if (handler instanceof HandlerMethod) {
 			request.setAttribute("contextpath", request.getContextPath());
 			Subject subject = SecurityUtils.getSubject();  
-			if(subject.isAuthenticated()){
+			//if(subject.isAuthenticated()){
 				//将当前登录信息设置到threadlocal中
 				SUserUtil.setCurrentUser ((SUser)subject.getSession().getAttribute(SUserUtil.SHIRO_CURRENT_USER_INFO));  
-			}
+			//}
             return true;
         } else {
             return super.preHandle(request, response, handler);

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=gbk"  pageEncoding="gbk"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%
   String path = request.getContextPath();
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500Òì³£  Internal Server Error</title>
+    <title>500å¼‚å¸¸  Internal Server Error</title>
     <link href="<%=staticPath%>/resource/hplus/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%=staticPath%>/resource/hplus/css/font-awesome.min.css" rel="stylesheet">
     <link href="<%=staticPath%>/resource/hplus/css/animate.min.css" rel="stylesheet">
@@ -19,12 +19,12 @@
 <body class="gray-bg">
     <div class="middle-box text-center animated fadeInDown">
         <h1>500</h1>
-        <h3 class="font-bold">·þÎñÆ÷ÄÚ²¿´íÎó</h3>
+        <h3 class="font-bold">æœåŠ¡å™¨å†…éƒ¨é”™è¯¯</h3>
 
         <div class="error-desc">
-            ·þÎñÆ÷ºÃÏñ³ö´íÁË...
-            <br/>Äú¿ÉÒÔ·µ»ØÖ÷Ò³¿´¿´
-            <br/><a href="<%=staticPath%>/" class="btn btn-primary m-t">Ö÷Ò³</a>
+            æœåŠ¡å™¨å¥½åƒå‡ºé”™äº†...
+            <br/>æ‚¨å¯ä»¥è¿”å›žä¸»é¡µçœ‹çœ‹
+            <br/><a href="<%=staticPath%>/" class="btn btn-primary m-t">ä¸»é¡µ</a>
         </div>
     </div>
     <script src="<%=staticPath%>/resource/hplus/js/jquery.min.js"></script>

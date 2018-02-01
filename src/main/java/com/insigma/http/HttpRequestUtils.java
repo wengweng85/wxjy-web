@@ -1,23 +1,25 @@
 package com.insigma.http;
 
-import com.github.pagehelper.PageInfo;
-import com.insigma.dto.SysCode;
-import com.insigma.json.JsonDateValueProcessor;
-import com.insigma.resolver.AppException;
-import com.insigma.shiro.realm.SUserUtil;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import com.github.pagehelper.PageInfo;
+import com.insigma.dto.SysCode;
+import com.insigma.json.JsonDateValueProcessor;
+import com.insigma.resolver.AppException;
+import com.insigma.shiro.realm.SUserUtil;
 
 
 /**
@@ -200,6 +202,7 @@ public class HttpRequestUtils<T> {
     }
 
 
+
     /**
      * post请求
      *
@@ -216,6 +219,27 @@ public class HttpRequestUtils<T> {
             throw new AppException(e);
         }
     }
+    
+
+
+    /**
+     * 发送delete 请求
+     *
+     * @param url
+     * @return
+     * @throws AppException
+     */
+    public JSONObject httpDelete(String url) throws AppException {
+        try {
+            HttpResult httpresult = HttpHelper.executeDelete(base_api_url + url, appkey);
+            return parseHttpResult(httpresult, url);
+        } catch (IOException e) {
+            throw new AppException(e);
+        }
+    }
+
+    
+ 
 
     /**
      * 发送get请求
@@ -269,6 +293,25 @@ public class HttpRequestUtils<T> {
             throw new AppException(e);
         }
     }
+    
+    /**
+     * 发送文件(excel)
+     * @param url
+     * @param file
+     * @param excel_batch_excel_type
+     * @param mincolumns
+     * @return
+     * @throws AppException
+     */
+    public JSONObject executeUploadExcelFile(String url, File file, String excel_batch_excel_type, String mincolumns) throws AppException {
+        try {
+            HttpResult httpresult = HttpHelper.executeUploadExcelFile(base_api_url + url, appkey, file, excel_batch_excel_type,  mincolumns);
+            return parseHttpResult(httpresult, url);
+        } catch (IOException e) {
+            throw new AppException(e);
+        }
+    }
+    
 
     /**
      * 解析返回的httpresult

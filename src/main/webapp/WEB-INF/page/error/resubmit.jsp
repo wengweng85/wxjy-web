@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=gbk"  pageEncoding="gbk"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%
   String path = request.getContextPath();
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>�����ظ��ύ����</title>
+    <title>请勿重复提交数据</title>
     <link href="<%=staticPath%>/resource/hplus/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%=staticPath%>/resource/hplus/css/font-awesome.min.css" rel="stylesheet">
     <link href="<%=staticPath%>/resource/hplus/css/animate.min.css" rel="stylesheet">
@@ -18,13 +18,13 @@
 
 <body class="gray-bg">
     <div class="middle-box text-center animated fadeInDown">
-        <h2>�����ظ��ύ����</h2>
+        <h2>请勿重复提交数据</h2>
 
         <div class="error-desc">
-                                        ϵͳ��⵽�ظ��ύ���ݡ���ȷ��
+                                        系统检测到重复提交数据、请确认
             <!-- 
-            <br/>�����Է�����ҳ����
-            <br/><a href="<%=staticPath%>/" class="btn btn-primary m-t">��ҳ</a>
+            <br/>您可以返回主页看看
+            <br/><a href="<%=staticPath%>/" class="btn btn-primary m-t">主页</a>
             -->
         </div>
     </div>

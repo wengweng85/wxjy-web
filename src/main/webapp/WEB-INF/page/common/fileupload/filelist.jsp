@@ -26,7 +26,8 @@
 	            <form class="form-horizontal" id="query_form" >
 			       <div class="form-group">
 			            <rc:hidden property="file_bus_id" value="${filerecord.file_bus_id}"/>
-			            <rc:select property="file_bus_type" label="业务类型" codetype="FILE_BUS_TYPE" value="${filerecord.file_bus_type}"  />
+                       <rc:hidden property="url" value="${url}"/>
+			            <rc:select property="file_bus_type" label="业务类型" codetype="FILE_BUS_TYPE" />
 			            <rc:select property="filename" label="文件名" codetype="FILENAME"  filter="aaa103 like '%${filerecord.file_name}%'"  />
 			            <!-- 
 			            <rc:textedit property="file_name" label="文件名"/>
@@ -34,8 +35,8 @@
 			            <div class="col-sm-6" align="right">
 		                   <a class="btn btn-info" onclick="file_query()"><i class="fa fa-search"></i>&nbsp;查询</a>
 		                   <a class="btn btn-info" onclick="reload_select()"><i class="fa fa-search"></i>&nbsp;文件名代码刷新</a>
-		                   <a class="btn btn-success" onclick="rc.open_file_upload_page('${filerecord.file_bus_id}','${filerecord.file_bus_type}','file_query')"><i class="fa fa-upload"></i>&nbsp;文件上传</a>
-		                   <a class="btn btn-success" onclick="rc.open_imgage_upload_page('${filerecord.file_bus_id}','${filerecord.file_bus_type}','file_query')""><i class="fa fa-upload"></i>&nbsp;图片上传</a>
+		                   <a class="btn btn-success" onclick="rc.open_file_upload_page('${filerecord.file_bus_id}','${url}','file_query')"><i class="fa fa-upload"></i>&nbsp;文件上传</a>
+		                   <a class="btn btn-success" onclick="rc.open_imgage_upload_page('${filerecord.file_bus_id}','${url}','file_query')"><i class="fa fa-upload"></i>&nbsp;图片上传</a>
 		                </div>
 			       </div>
 		       </form>
@@ -126,7 +127,7 @@
     function delete_file_by_id(bus_uuid){
    	  if(bus_uuid){
    		layer.confirm('确定删除要邮件此文件吗？', function(index){
-   			var url= "<c:url value='/common/fileload/deletebyid/'/>"+bus_uuid;
+   			var url= "<c:url value='/common/fileload/deleteById/'/>"+bus_uuid;
    			rc.ajax(url, null,function (response) {
    				if(response.success){
    					$('#filetable').refreshtable();

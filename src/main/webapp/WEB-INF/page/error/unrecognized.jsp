@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=gbk"  pageEncoding="gbk"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%
   String path = request.getContextPath();
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>δ��Ȩ</title>
+    <title>未授权</title>
     <link href="<%=staticPath%>/resource/hplus/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%=staticPath%>/resource/hplus/css/font-awesome.min.css" rel="stylesheet">
     <link href="<%=staticPath%>/resource/hplus/css/animate.min.css" rel="stylesheet">
@@ -18,13 +18,13 @@
 
 <body class="gray-bg">
     <div class="middle-box text-center animated fadeInDown">
-        <h2>δ��Ȩ</h2>
+        <h2>未授权</h2>
 
         <div class="error-desc">
-            ��û����ط���Ȩ��...
+            你没有相关访问权限...
             <!-- 
-            <br/>�����Է�����ҳ����
-            <br/><a href="<%=staticPath%>/" class="btn btn-primary m-t">��ҳ</a>
+            <br/>您可以返回主页看看
+            <br/><a href="<%=staticPath%>/" class="btn btn-primary m-t">主页</a>
             -->
         </div>
     </div>

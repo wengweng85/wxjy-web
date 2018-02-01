@@ -178,7 +178,7 @@
 						      </table>
 						</div>
 							<table id="exceltable" 
-							data-url="<c:url value='/excelimport/EXCEL_IMPORT_001_001/getList'/>"
+							data-url="<c:url value='/excelimport/EXCEL_IMPORT_001_001/getList'/>?excel_batch_excel_type=sxpt_excel_imp"
                             data-single-select="true"
                             data-page-size="5"
                             data-pagination="true"

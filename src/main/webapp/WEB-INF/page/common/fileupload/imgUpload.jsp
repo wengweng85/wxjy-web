@@ -1,17 +1,22 @@
-<%@ page language="java" contentType="text/html; charset=gbk"  pageEncoding="gbk"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--360ä¯ÀÀÆ÷ÓÅÏÈÒÔwebkitÄÚºË½âÎö-->
-     <title>ÎÄ¼şÉÏ´«</title>
-    <link href="<c:url value='/resource/hplus/css/bootstrap.min.css'/>" rel="stylesheet">
-    <link href="<c:url value='/resource/hplus/css/font-awesome.min.css'/>" rel="stylesheet">
-    <link href="<c:url value='/resource/hplus/css/animate.min.css'/>" rel="stylesheet">
-    <link href="<c:url value='/resource/hplus/css/plugins/webuploader/webuploader.css'/>" rel="stylesheet">
-    <link href="<c:url value='/resource/hplus/css/demo/webuploader-demo.min.css'/>" rel="stylesheet" >
+    <!--360æµè§ˆå™¨ä¼˜å…ˆä»¥webkitå†…æ ¸è§£æ-->
+     <title>æ–‡ä»¶ä¸Šä¼ </title>
+    <%
+        String staticPath =  com.insigma.common.listener.AppConfig.getProperties("website_static_resource_url");
+    %>
+
+    <link href="<%=staticPath%>/resource/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<%=staticPath%>/resource/hplus/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<%=staticPath%>/resource/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<%=staticPath%>/resource/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="<%=staticPath%>/resource/hplus/css/plugins/webuploader/webuploader.css" rel="stylesheet">
+    <link href="<%=staticPath%>/resource/hplus/css/demo/webuploader-demo.min.css" rel="stylesheet" >
 </head>
 <body >
     <body class="gray-bg" style="overflow-x: hidden;">
@@ -25,11 +30,11 @@
                            <div class="queueList">
                                <div id="dndArea" class="placeholder">
                                    <div id="filePicker"></div>
-                                   <p>»ò½«ÕÕÆ¬ÍÏµ½ÕâÀï£¬µ¥´Î×î¶à¿ÉÑ¡300ÕÅ</p>
+                                   <p>æˆ–å°†ç…§ç‰‡æ‹–åˆ°è¿™é‡Œï¼Œå•æ¬¡æœ€å¤šå¯é€‰300å¼ </p>
                                </div>
                            </div>
                            <input type="hidden" id="file_bus_id" value="${filerecord.file_bus_id}">
-                           <input type="hidden" id="file_bus_type" value="${filerecord.file_bus_type}">
+                           <input type="hidden" id="url" value="${url}">
                            <input type="hidden" id="upload_callback" value="${filerecord.upload_callback}">
                            <div class="statusBar" style="display:none;">
                                <div class="progress">
@@ -39,7 +44,7 @@
                                <div class="info"></div>
                                <div class="btns">
                                    <div id="filePicker2"></div>
-                                   <div class="uploadBtn">¿ªÊ¼ÉÏ´«</div>
+                                   <div class="uploadBtn">å¼€å§‹ä¸Šä¼ </div>
                                </div>
                            </div>
                        </div>
@@ -48,9 +53,9 @@
            </div>
        </div>
     </div>   
-    <script src="<c:url value='/resource/hplus/js/jquery.min.js'/>"></script>
-    <script src="<c:url value='/resource/hplus/js/bootstrap.min.js'/>"></script>
-    <script src="<c:url value='/resource/hplus/js/plugins/layer/layer.min.js'/>"></script>
+    <script src="<%=staticPath%>/resource/hplus/js/jquery.min.js"></script>
+    <script src="<%=staticPath%>/resource/hplus/js/bootstrap.min.js"></script>
+    <script src="<%=staticPath%>/resource/hplus/js/plugins/layer/layer.min.js"></script>
     <script type="text/javascript">
         var BASE_URL = 'js/plugins/webuploader';
         var contextPath='<c:url value="/"/>';
@@ -58,8 +63,8 @@
         	parent.${filerecord.upload_callback}('${filerecord.file_bus_id}',file_uuid)
         }
     </script>
-    <script src="<c:url value='/resource/hplus/js/plugins/webuploader/webuploader.min.js'/>"></script>
-    <script src="<c:url value='/resource/hplus/js/json2.js'/>"></script>
-    <script src="<c:url value='/resource/hplus/js/rc.webuploader.img.js'/>"></script>
+    <script src="<%=staticPath%>/resource/hplus/js/plugins/webuploader/webuploader.min.js"></script>
+    <script src="<%=staticPath%>/resource/hplus/js/json2.js"></script>
+    <script src="<%=staticPath%>/resource/hplus/js/rc.webuploader.img.js"></script>
 </body>
 </html>

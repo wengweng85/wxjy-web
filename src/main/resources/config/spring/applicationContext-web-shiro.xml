@@ -29,15 +29,8 @@
 			    /=authc
 			    /index=authc
 				/demo/**=authc
-				/job/**=authc
 				/common/**=authc
-				/excelimport/**=authc
-				/sxptdataimport/**=authc
-				/grid/**=authc
-				/log/**=authc
-				/sys/**=authc,roles[admin]
-				/web/**=authc
-				/api/**=authc
+				/token/**=authc
 			</value>
 		</property>
 	</bean>

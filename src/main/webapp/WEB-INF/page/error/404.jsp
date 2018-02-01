@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=gbk"  pageEncoding="gbk"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%
   String path = request.getContextPath();
@@ -20,9 +20,9 @@
 <body class="gray-bg">
     <div class="middle-box text-center animated fadeInDown">
         <h1>404</h1>
-        <h3 class="font-bold">页面未找到！</h3>
+        <h3 class="font-bold">椤甸潰鏈壘鍒帮紒</h3>
         <div class="error-desc">
-                               抱歉，页面好像去火星了~
+                               鎶辨瓑锛岄〉闈㈠ソ鍍忓幓鐏槦浜唦
         </div>
     </div>
     <script src="<%=staticPath%>/resource/hplus/js/jquery.min.js"></script>
